@@ -4,6 +4,9 @@ import pandas as pd
 import boto3
 from io import StringIO
 import datetime
+from decimal import Decimal
+
+
 
 # Scraping del BCE
 url = "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
@@ -34,4 +37,16 @@ bucket="tipospot"
 fecha = datetime.datetime.now().strftime("%Y%m%d")
 df.to_csv(f"s3://{bucket}/spot_rates_{fecha}.csv", index=False)
 
+df.rename(columns={"Currency": "CURRENCY", "Spot": "TipoSpot"}, inplace=True)
 
+# Agregar campo TIME como string (formato yyyymmdd)
+df["TIME"] = fecha
+
+# Subir a DynamoDB
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("TipoSpot")
+
+records = df.to_dict(orient="records")
+for record in records:
+    record["TipoSpot"] = Decimal(str(record.get("TipoSpot")))
+    response = table.put_item(Item=record)
