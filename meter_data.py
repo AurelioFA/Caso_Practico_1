@@ -4,7 +4,7 @@ from io import StringIO
 from decimal import Decimal
 import datetime
 
-# Leer CSV desde S3
+
 s3 = boto3.client("s3")
 bucket = "tipospot"
 fecha = datetime.datetime.now().strftime("%Y%m%d")
