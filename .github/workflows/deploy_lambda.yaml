@@ -9,7 +9,7 @@ env:
   AWS_REGION: eu-west-1
   ECR_REPOSITORY: tipospot
   LAMBDA_NAME: echo_lambda
-  DOCKERFILE_PATH: DockerFile
+  DOCKERFILE_PATH: Dockerfile
 
 defaults:
   run:
