@@ -29,16 +29,9 @@ print(df.to_string(index=False))
 csv_buffer = StringIO()
 df.to_csv(csv_buffer, index=False)
 
+bucket="tipospot"
 
 fecha = datetime.datetime.now().strftime("%Y%m%d")
-s3 = boto3.client("s3")
-bucket_name = "tipospot"
-filename = f"spot_rates_{fecha}.csv"
+df.to_csv(f"s3://{bucket}/spot_rates_{fecha}.csv", index=False)
 
-response = s3.put_object(
-    Bucket=bucket_name,
-    Key=filename,
-    Body=csv_buffer.getvalue()
-)
 
-print(f"Archivo subido a S3 -> s3://{bucket_name}/{filename}")
